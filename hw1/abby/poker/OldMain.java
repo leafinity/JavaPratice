@@ -174,26 +174,27 @@ public class OldMain {
         }
         Integer[] nonRepeatArray = randomSet.toArray(new Integer[randomSet.size()]);
         
-        //test for spicail cases
-        // Integer[] nonRepeatArray = new Integer[54];
-        // for (int i = 0, target = 1; target < 15 ; target++) {
-        //     nonRepeatArray[i] = target;
-        //     i+=4;
-        // }
-        // for (int i = 1, target = 16; target < 30; target++) {
-        //     nonRepeatArray[i] = target;
-        //     i+=4;
-        // }
-        // for (int i = 2, target = 30; target < 43; target++) {
-        //     nonRepeatArray[i] = target;
-        //     i+=4;
-        // }
-        // for (int i = 3, target = 43; target < 54 ; target++) {
-        //     nonRepeatArray[i] = target;
-        //     i+=4;
-        // }
-        // nonRepeatArray[51] = 0;
-        // nonRepeatArray[47] = 15;
+        /**test for spicail cases**/
+        /* Integer[] nonRepeatArray = new Integer[54];
+        for (int i = 0, target = 1; target < 15 ; target++) {
+            nonRepeatArray[i] = target;
+            i+=4;
+        }
+        for (int i = 1, target = 16; target < 30; target++) {
+             nonRepeatArray[i] = target;
+            i+=4;
+        }
+        for (int i = 2, target = 30; target < 43; target++) {
+            nonRepeatArray[i] = target;
+            i+=4;
+        }
+        for (int i = 3, target = 43; target < 54 ; target++) {
+            nonRepeatArray[i] = target;
+            i+=4;
+        }
+        nonRepeatArray[51] = 0;
+        nonRepeatArray[47] = 15;
+        */
         
         //deal
         int playerNum = _playerList.size();
