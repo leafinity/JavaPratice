@@ -16,7 +16,6 @@ public class OldMain {
     private boolean _bonus;
     private Card[] _deck;
     private Stage _stage;
-    private int _round;
 
     private enum Stage {
         BASIC, BONUS, OVER;
@@ -51,12 +50,12 @@ public class OldMain {
         _playerList = new ArrayList<Player>();
         _deck = new Card[_DECK_SIZE];
         _stage = Stage.BASIC;
-        _round = 0;
     }
 
     public void start() {
         _initGame();
         System.out.println("Game start");
+        _checkSpecialWinCase();
         while (_gameRound());
     }
 
@@ -68,7 +67,6 @@ public class OldMain {
                 + " draws a card from Player" + from.get_ID() + " " +  draw.toString());
         to.showHand();
         from.showHand();
-        _round++;
         return _keepGoing(to, from);
     }
 
@@ -80,12 +78,18 @@ public class OldMain {
         return _playerList.get(1);
     }
 
+    private void _checkSpecialWinCase() {
+        Player p1 = _playerList.get(0);
+        Player p2 = _playerList.get(1);
+        _stage = _stage.nextStage(_isSomebodyWin(p1, p2, false), _playerList, _bonus);
+    }
+
     private boolean _keepGoing(Player to, Player from) {
-        _stage = _stage.nextStage(_isSomebodyWin(to, from), _playerList, _bonus);
+        _stage = _stage.nextStage(_isSomebodyWin(to, from, true), _playerList, _bonus);
         return _stage.compareTo(Stage.OVER) != 0;
     }
 
-    private boolean _isSomebodyWin(Player to, Player from) {
+    private boolean _isSomebodyWin(Player to, Player from, boolean goingNextRound) {
         boolean somebodyWin = true;
         if (to.isWin() && from.isWin()) {
             int ID1 = to.get_ID() > from.get_ID()?
@@ -106,16 +110,22 @@ public class OldMain {
             System.out.println("Player" + from.get_ID() + " wins");
 
             //remove playerTo and playerFrom, add back PlayerTo
-            Player p = _popPlayer();
-            _popPlayer();
-            _pushPlayer(p);
+            if (goingNextRound) {
+                Player p = _popPlayer();
+                _popPlayer();
+                _pushPlayer(p);
+            } else {
+                _playerList.remove(from);
+            }
 
         } else {
             somebodyWin = false;
 
             //remove playerTo, and add back PlayerTo
-            Player p = _popPlayer();
-            _pushPlayer(p);
+            if (goingNextRound) {
+                Player p = _popPlayer();
+                _pushPlayer(p);
+            }
         }
         return somebodyWin;
     }
@@ -163,7 +173,28 @@ public class OldMain {
             randomSet.add(next);
         }
         Integer[] nonRepeatArray = randomSet.toArray(new Integer[randomSet.size()]);
-
+        
+        //test for spicail cases
+        // Integer[] nonRepeatArray = new Integer[54];
+        // for (int i = 0, target = 1; target < 15 ; target++) {
+        //     nonRepeatArray[i] = target;
+        //     i+=4;
+        // }
+        // for (int i = 1, target = 16; target < 30; target++) {
+        //     nonRepeatArray[i] = target;
+        //     i+=4;
+        // }
+        // for (int i = 2, target = 30; target < 43; target++) {
+        //     nonRepeatArray[i] = target;
+        //     i+=4;
+        // }
+        // for (int i = 3, target = 43; target < 54 ; target++) {
+        //     nonRepeatArray[i] = target;
+        //     i+=4;
+        // }
+        // nonRepeatArray[51] = 0;
+        // nonRepeatArray[47] = 15;
+        
         //deal
         int playerNum = _playerList.size();
         int handSize = _DECK_SIZE / playerNum;
