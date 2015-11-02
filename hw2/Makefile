@@ -5,6 +5,9 @@
 JFLAGS = -g -sourcepath src/
 JC = javac
 
+JVMFLAGS = -classpath src
+JVM= java
+
 
 #
 # Clear any default targets for building .class files from .java files; we 
@@ -45,12 +48,18 @@ CLASSES = \
 	src/Player.java \
 	src/Shuffler.java
 
+MAIN = POOCasino
+
 
 #
 # the default make target entry
 #
 
 default: classes
+
+# run
+run:
+	$(JVM) $(JVMFLAGS) $(MAIN)
 
 #
 # This target entry uses Suffix Replacement within a macro: 
@@ -67,7 +76,5 @@ classes: $(CLASSES:.java=.class)
 #
 
 clean:
-	$(RM) *.class
+	$(RM) src/*.class
 
-# run
-run: java ./src/*.java
