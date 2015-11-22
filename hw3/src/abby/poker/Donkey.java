@@ -10,4 +10,5 @@ public class Donkey extends DonkeyWithNoJoker {
     public Donkey(int playerNum, boolean hasBonusGame, boolean interactive) {
         super(playerNum, hasBonusGame, interactive);
     }
+
 }

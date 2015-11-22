@@ -16,23 +16,24 @@ public class OldMain {
     protected Card[] _deck;
     private Stage _stage;
     private boolean _interactive;
+    protected List<Card> _drop;
 
     private enum Stage {
         BASIC, BONUS, OVER;
 
-        public Stage nextStage(boolean somebodyWin, List<Player> playerList, boolean bonus) {
+        private Stage nextStage(boolean somebodyWin, List<Player> playerList, boolean bonus) {
             if (somebodyWin) {
                 if (this.compareTo(BASIC) == 0) {
                     System.out.println("Basic game over");
-                    //there is 3 player and two player win at the same time 
-                    if (playerList.size() <= 1) {
-                        System.out.println("Bonus game over");
+                    if (bonus) {                    //there is 3 player and two player win at the same time 
+                        if (playerList.size() <= 1) {
+                            System.out.println("Bonus game over");
+                            return OVER;
+                        }
+                        return BONUS;
+                    } else {
                         return OVER;
                     }
-                    if (bonus)
-                        return BONUS;
-                    else
-                        return OVER;
                 } else {
                     if(playerList.size() == 1) {
                         System.out.println("Bonus game over");
@@ -60,12 +61,26 @@ public class OldMain {
         _deck = new Card[_DECK_SIZE];
         _stage = Stage.BASIC;
         _interactive = interactive;
+        _drop = new ArrayList<Card>();
     }
 
     public void start() {
         _initGame();
         System.out.println("Game start");
         while (_interactive?_gameRoundWithInterActive():_gameRound());
+
+        //test for correction
+        _playerList.forEach(player -> {
+            _drop.removeAll(player.drop);
+            _drop.removeAll(player.get_hand());
+        });
+        if(!gameRunCorrectly()) {
+            System.out.println("There must be some bug");
+
+            System.out.print("_drop: ");
+            _drop.forEach(card-> {System.out.print(card.toString()+ " ");});
+            System.out.println();
+        }
     }
 
     private boolean _gameRound() {
@@ -139,6 +154,10 @@ public class OldMain {
             //remove playerTo and playerFrom
             _popPlayer();
             _popPlayer();
+            
+            //for test correction
+            _drop.removeAll(to.drop);
+            _drop.removeAll(from.drop);
         } else if (to.isWin()) {
             if (_interactive &&  to.get_ID() == 0)
                 System.out.println("you win");
@@ -147,6 +166,9 @@ public class OldMain {
 
             //remove playerTo and playerFrom
             _popPlayer();
+            
+            //for test correction
+            _drop.removeAll(to.drop);
         } else if (from.isWin()) {
             if (_interactive &&  from.get_ID() == 0)
                 System.out.println("you win");
@@ -158,6 +180,8 @@ public class OldMain {
             _popPlayer();
             _pushPlayer(p);
 
+            //for test correction
+            _drop.removeAll(from.drop);
         } else {
             somebodyWin = false;
 
@@ -201,6 +225,9 @@ public class OldMain {
             _deck[_REGULAR_DECK_SIZE] = new Card(Card.Suit.RED, 0);
         if(_DECK_SIZE > _REGULAR_DECK_SIZE + 1)
             _deck[_REGULAR_DECK_SIZE + 1] = new Card(Card.Suit.BLACK, 0);
+
+        //for test correction
+        _drop.addAll(Arrays.asList(_deck));
     }
 
     protected void _dealCard(List<Integer> nonRepeatArray) {
@@ -247,9 +274,14 @@ public class OldMain {
 
     private void _initHands() {
         _playerList.forEach(player -> player.initHand());
+
     }
 
     private void _showPlayersHand() {
         _playerList.forEach(player -> player.showHand());
+    }
+
+    protected boolean gameRunCorrectly() {
+        return _drop.isEmpty();
     }
 }

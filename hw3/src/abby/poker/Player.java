@@ -10,16 +10,22 @@ public class Player {
     private int _ID;
     private boolean _isDonkey;
     private boolean _interactive = false;
+    public List<Card> drop;
 
     public Player(int id, boolean isDonkey, boolean interactive) {
         _hand = new ArrayList<Card>();
         _ID = id;
         _isDonkey = isDonkey;
         _interactive = interactive;
+        drop = new ArrayList<Card>();
     }
 
     public int get_ID() {
         return _ID;
+    }
+
+    public List<Card> get_hand() {
+        return _hand;
     }
 
     public void setNewCard(List<Card> cards) {
@@ -66,6 +72,20 @@ public class Player {
         } else {
             System.out.println("Player" + _ID + " has " + getHandSize() + " cards");
         }
+    }
+
+    public void showDrop() {
+        drop.sort(Comparator.<Card>naturalOrder());
+        if (_interactive && _ID == 0)
+            System.out.print("You drop: ");
+        else
+            System.out.println("Player" + _ID + " drop : ");
+        for (Card card : drop) {
+            System.out.print(card);
+            if (drop.indexOf(card) != drop.size() - 1)
+                System.out.print(" ");
+        }
+        System.out.println();
     }
 
     public int getHandSize() {
@@ -150,7 +170,8 @@ public class Player {
     private void _dropThePair(Card card1, Card card2) {
         _hand.remove(card1);
         _hand.remove(card2);
-
+        drop.add(card1);
+        drop.add(card2);
     }
 
     private void _beDraw(Card removed) {

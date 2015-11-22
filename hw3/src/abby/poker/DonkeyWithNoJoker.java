@@ -27,4 +27,11 @@ public class DonkeyWithNoJoker extends OldMain {
         super.start();
         System.out.println("Donkey is " + donkey.toString());
     }
+    
+
+    @Override
+    protected boolean gameRunCorrectly() {
+        _drop.remove(donkey);
+        return super.gameRunCorrectly();
+    }
 }
