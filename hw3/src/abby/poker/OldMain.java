@@ -24,6 +24,11 @@ public class OldMain {
             if (somebodyWin) {
                 if (this.compareTo(BASIC) == 0) {
                     System.out.println("Basic game over");
+                    //there is 3 player and two player win at the same time 
+                    if (playerList.size() <= 1) {
+                        System.out.println("Bonus game over");
+                        return OVER;
+                    }
                     if (bonus)
                         return BONUS;
                     else
@@ -127,7 +132,7 @@ public class OldMain {
             int ID2 = to.get_ID() < from.get_ID()?
                     from.get_ID(): to.get_ID();
             if (_interactive &&  ID1 == 0)
-                System.out.print("Player" + ID2 + " and you" + " win");
+                System.out.println("Player" + ID2 + " and you" + " win");
             else
                 System.out.println("Player" + ID1 + " and Player" + ID2 + " win");
 
@@ -136,7 +141,7 @@ public class OldMain {
             _popPlayer();
         } else if (to.isWin()) {
             if (_interactive &&  to.get_ID() == 0)
-                System.out.print("you win");
+                System.out.println("you win");
             else
                 System.out.println("Player" + to.get_ID() + " wins");
 
@@ -144,7 +149,7 @@ public class OldMain {
             _popPlayer();
         } else if (from.isWin()) {
             if (_interactive &&  from.get_ID() == 0)
-                System.out.print("you win");
+                System.out.println("you win");
             else
                 System.out.println("Player" + from.get_ID() + " wins");
 

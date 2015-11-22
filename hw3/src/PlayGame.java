@@ -1,6 +1,5 @@
-package abby.poker;
-
 import java.util.Scanner;
+import abby.poker.*;
 
 public class PlayGame {
 
@@ -28,30 +27,34 @@ public class PlayGame {
                 }
                 break;
             }
-            System.out.println("Do you want to play with bonus game?(y/n)");
-            System.out.println("(till the latest player finished)");
-            while (true) {
-                String input = scanner.nextLine();
-                switch (input) {
-                    case "y":
-                    case "Y":
-                    case "yes":
-                    case "Yes":
-                    case "YES":
-                        bonusGame = true;
-                        break;
-                    case "n":
-                    case "N":
-                    case "no":
-                    case "No":
-                    case "NO":
-                        bonusGame = false;
-                        break;
-                    default:
-                        System.out.println("please enter 'y' or 'n'.");
-                        continue;
+            if (playerNum > 2) {
+                System.out.println("Do you want to play with bonus game?(y/n)");
+                System.out.println("(till the latest player finished)");
+                while (true) {
+                    String input = scanner.nextLine();
+                    switch (input) {
+                        case "y":
+                        case "Y":
+                        case "yes":
+                        case "Yes":
+                        case "YES":
+                            bonusGame = true;
+                            break;
+                        case "n":
+                        case "N":
+                        case "no":
+                        case "No":
+                        case "NO":
+                            bonusGame = false;
+                            break;
+                        default:
+                            System.out.println("please enter 'y' or 'n'.");
+                            continue;
+                    }
+                    break;
                 }
-                break;
+            } else {
+                bonusGame = false;
             }
             System.out.println("Do you want to play Interactive?(y/n)");
             while (true) {
@@ -98,7 +101,7 @@ public class PlayGame {
                         game = new Donkey(playerNum, bonusGame, interactive);
                         break;
                     default:
-                        System.out.println("please enter 'a', 'b', 'c' ,'d' or 'q'.");
+                        System.out.println("please enter 'a', 'b', 'c' or 'd'.");
                         continue;
                 }
                 break;
