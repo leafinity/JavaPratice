@@ -48,7 +48,7 @@ public class ComputeHand {
 	}
 
 	public static boolean isBlackJack(Hand hand) {
-		if (hand.getCards().size() == 2 || getHTotalValue(hand) == 21)
+		if (hand.getCards().size() == 2 && getHTotalValue(hand) == 21)
 			return true;
 		return false;
 	}

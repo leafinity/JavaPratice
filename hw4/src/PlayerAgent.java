@@ -38,8 +38,8 @@ public class PlayerAgent {
 		//initail settings
 		_buyInsurance = false;
 		_surrender = false;
-		_faceUpCards = new ArrayList();
-		_splitedCards = new ArrayList();
+		_faceUpCards = new ArrayList<Card>();
+		_splitedCards = new ArrayList<Card>();
 
 		_isBroken = false;
 		_hasBrokenRule = false;
@@ -94,8 +94,8 @@ public class PlayerAgent {
 	}
 
 	public void cleanUp() {
-		_faceUpCards.removeAll(new ArrayList(_faceUpCards));
-		_splitedCards.removeAll(new ArrayList(_splitedCards));
+		_faceUpCards.clear();
+		_splitedCards.clear();
 		_buyInsurance = false;
 		_surrender = false;
 	}
@@ -103,26 +103,43 @@ public class PlayerAgent {
 
  	public void make_bet(ArrayList<Hand> last_table, int total_player) {
  		_bet = _player.make_bet(last_table, total_player, _position);
+ 		if (_bet == 0) {
+			System.out.println(_name + _position + ", you cannot bet 0.");
+			System.out.println(_name + _position + " is kick of.");
+		} else {
+ 			System.out.println(_name + _position + " bets " + _bet + ".");
+ 		}
  	}
 	
 	public void buy_insurance(Card dealer_open, ArrayList<Hand> current_table) {
 		_buyInsurance = _player.buy_insurance(_faceUpCards.get(0), dealer_open, current_table);
-		if (_buyInsurance)
+		if (_buyInsurance) {
 			increase_chips(0.5 * _bet);
+ 			System.out.println(_name + _position + " buys insurance.");
+ 		}
 	}
 
 	public void	do_surrender(Card dealer_open, ArrayList<Hand> current_table) {
 		_surrender = _player.do_surrender(_faceUpCards.get(0), dealer_open, current_table);
+ 		if (_surrender)
+ 			System.out.println(_name + _position + " surrenders.");
 	}
 	
 	public boolean do_double(Card dealer_open, ArrayList<Hand> current_table, boolean splited) {
-		if (_player.do_double(getHand(), dealer_open, current_table)) {
-			if (hasSplited()) {
-				_splitedBet = _bet*2;
-			} else {
-				_bet *= 2;
-			}
-			return true;
+assert splited || getHand().getCards().size() == 2: printHand(false);
+assert !splited || getSplitedHand().getCards().size() == 2: "splited: " + printHand(true);
+		if (splited) {
+			if (_player.do_double(getSplitedHand(), dealer_open, current_table)) {
+				_splitedBet = _splitedBet * 2;
+ 				System.out.println("double down.");
+				return true;
+			} 
+		} else {
+			if (_player.do_double(getHand(), dealer_open, current_table)) {
+				_bet = _bet * 2;
+ 				System.out.println("double down.");
+				return true;
+			} 
 		}
 		return false;
 	}
@@ -134,35 +151,106 @@ public class PlayerAgent {
 			_splitedCards.add(_faceUpCards.get(1));
 			_faceUpCards.remove(1);
 			_splitedBet = _bet;
+			System.out.println(_name + _position + " splited.");
 			return true;
 		}
 		return false;
 	}
 
 	public boolean hit_me(Card dealer_open, ArrayList<Hand> current_table, boolean splited) {
-		return _player.hit_me(new Hand(_faceUpCards), dealer_open, current_table);
+		boolean hit = _player.hit_me(new Hand(_faceUpCards), dealer_open, current_table);
+		if (hit) {
+ 			System.out.println("hit.");
+ 			return true;
+		} else  {
+ 			System.out.println("stand.");
+ 			return false;
+		}
 	}
 
 	public void decrease_chips(double diff) {
 		try {
 			_player.decrease_chips(diff);
+			System.out.println(_name + _position + " lose " + diff + ".");
+			System.out.println(printChip());
 		} catch(Player.NegativeException e) {
 			// the bet is negative -> break rule
 			_hasBrokenRule = true;
+			System.out.println(_name + _position + " bet negative bet.");
+			System.out.println(_name + _position + " is kick of.");
 		} catch(Player.BrokeException e) {
 			_isBroken = true;
+			System.out.println(_name + _position + " has broken.");
+			System.out.println(_name + _position + " is kick of.");
 		}
 	}
 
 	public void increase_chips(double diff) {
 		try {
 			_player.increase_chips(diff);
+			System.out.println(_name + _position + " earn " + diff + ".");
+			System.out.println(printChip());
 		} catch(Player.NegativeException e) {
 			_hasBrokenRule = true;
+			System.out.println(_name + _position + " bet negative bet.");
+			System.out.println(_name + _position + " is kick of.");
 		}
 	}
 
 	public String toString() {
-		return "";
+		return _name + _position;
+	}
+
+	public String printHand(boolean splited) {
+		StringBuilder sb = new StringBuilder();
+		for (Card c: splited? _splitedCards: _faceUpCards) {
+			sb.append(printCard(c));
+			sb.append(" ");
+		}
+
+		return "Hand:[ " + sb.toString() + "] " + ComputeHand.getHTotalValue(getHand());
+	}
+
+	public String printChip() {
+		return _name + _position + " " + _player.toString();
+	}
+
+	private String printCard(Card card) {
+		StringBuilder sb = new StringBuilder();
+		switch(card.getSuit()) {
+			case Card.CLUB:
+				sb.append("C");
+				break;
+			case Card.DIAMOND:
+				sb.append("D");
+				break;
+			case Card.HEART:
+				sb.append("H");
+				break;
+			case Card.SPADE:
+				sb.append("S");
+				break;
+		}
+
+		switch(card.getValue()) {
+			case 10:
+				sb.append("T");
+				break;
+			case 11:
+				sb.append("J");
+				break;
+			case 12:
+				sb.append("Q");
+				break;
+			case 13:
+				sb.append("K");
+				break;
+			case 1:
+				sb.append("A");
+				break;
+			default:
+				sb.append(card.getValue());
+		}
+		return sb.toString();
 	}
 }

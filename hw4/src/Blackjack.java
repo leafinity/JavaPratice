@@ -41,17 +41,25 @@ public class Blackjack {
 	public void run() {
 		while(--_nRound>=0) {
 			if (noPlayer()){
+System.out.println("There is no player. Game Over.");
 				break;
 			}
-			if ((_nRound - _mod) %2 == 0)
+			if ((_nRound - _mod + 1) %2 == 0)
 				deck.shuffle();
 			_askBet();
 			_assignFirstCardPair();
 
+			/*print current table*/
+System.out.println("table:");
+			_printTable();
+System.out.println("----start----");
+
 			if (dealer.getOpenCard().getValue() == 1) {
+System.out.println("Dealer'open is A.'");
 				_askInsurance();
 				if (dealer.sneak().getValue() >= 10) {
 					//dealer get blackjacket
+System.out.println("Dealer get blackjack.");
 					for (PlayerAgent player: players) {
 						player.openFaceDownCard();
 						if (!ComputeHand.isBlackJack(player.getHand()))
@@ -70,6 +78,7 @@ public class Blackjack {
 
 			_cleapUpPlayersCache();
 			lastTable = _getCurrentTable();
+			System.out.println();
 		}
 	}
 
@@ -115,6 +124,7 @@ public class Blackjack {
 				player.cleanUp();
 			}
 		}
+		dealer.cleanUp();
 	}
 
 	private void _playersPlay() {
@@ -122,16 +132,20 @@ public class Blackjack {
 			if (player.beKickOff()) {
 				continue;
 			}
+			System.out.println(player + "'s turn:");
 			//surrender
 			if (player.hasSurrender()) {
 				continue;
 			}
 			player.openFaceDownCard();
+System.out.println(player.printHand(false));
 			//splite
 			boolean splited = player.do_split_if_can(dealer.getOpenCard(), _getCurrentTable(player)); 
 			if (splited) {
 				player.assignCard(deck.take(), false);
 				player.assignCard(deck.take(), true);
+System.out.println(player.printHand(false));
+System.out.println(player.printHand(true));
 			}
 			boolean isSplitedRound = false;
 			for (int i = 0; i < 2; i++) {
@@ -146,29 +160,34 @@ public class Blackjack {
 						} else {
 							break;
 						}
+System.out.println(player.printHand(isSplitedRound));
 						//check busted
 						if (isSplitedRound) {
 							if (ComputeHand.isBusted(player.getSplitedHand())){
+System.out.println("Bust!");
 								break;
 							}
 						} else {
 							if (ComputeHand.isBusted(player.getHand())){
+System.out.println("Bust!");
 								break;
 							}
 						}
-					}
-					//if splited should have next round
-					if (splited) {
-						isSplitedRound = true;
-					} else {
-						break;
-					}
+					}//hit till stand
+				}//double down or hit till stand
+				
+				//if splited should have next round
+				if (splited) {
+					isSplitedRound = true;
+				} else {
+					break;
 				}
 			}
 		}
 	}
 
 	private void _dealerPlay() {
+		System.out.println("dealer's turn.");
 		while(true) {
 			if (ComputeHand.getLTotalValue(dealer.getHand()) >= 16) {
 				// no Ace = 11, and value over 16
@@ -180,6 +199,7 @@ public class Blackjack {
 			}
 			dealer.faceUpCards.add(deck.take());
 		}
+		System.out.println(dealer.printHand());
 	}
 
 	private void _compareResult() {
@@ -198,6 +218,7 @@ public class Blackjack {
 				if (ComputeHand.isBusted(playerHand)) {
 					player.decrease_chips(1 * bet);
 				} else if (ComputeHand.isBlackJack(playerHand)) {
+System.out.println(player + " get blackjack");
 					if (!ComputeHand.isBlackJack(dealerHand))
 						player.increase_chips(1.5 * bet);
 				} else { 
@@ -213,6 +234,9 @@ public class Blackjack {
 							player.decrease_chips(1 * bet);
 						} else if (dealerValue < playerValue) {
 							player.increase_chips(1 * bet);
+						} else {					
+System.out.println(player + " draw.");			
+System.out.println(player.printChip());
 						}
 					}
 				}
@@ -227,7 +251,7 @@ public class Blackjack {
 	}
 
 	private ArrayList<Hand> _getCurrentTable(PlayerAgent self) {
-		ArrayList<Hand> currentTable = new ArrayList();
+		ArrayList<Hand> currentTable = new ArrayList<Hand>();
 		for (PlayerAgent player: players) {
 			if (player != self) {
 				currentTable.add(player.getHand());
@@ -237,7 +261,7 @@ public class Blackjack {
 	}
 
 	private ArrayList<Hand> _getCurrentTable() {
-		ArrayList<Hand> currentTable = new ArrayList();
+		ArrayList<Hand> currentTable = new ArrayList<Hand>();
 		currentTable.add(dealer.getHand());
 		for (PlayerAgent player: players) {
 			currentTable.add(player.getHand());
@@ -257,5 +281,15 @@ public class Blackjack {
 			}
 		}
 		return sum == 4;
+	}
+
+	private void _printTable() {
+		for (PlayerAgent player: players) {
+			if (player.beKickOff())
+				continue;
+			assert player.getHand().getCards().size() == 1: "size: " + player.getHand().getCards().size();
+			System.out.println(player + player.printHand(false));
+		}
+		System.out.println(dealer.printHand());
 	}
 }

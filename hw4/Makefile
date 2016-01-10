@@ -8,7 +8,9 @@ JC = javac
 JVMFLAGS = -classpath src:lib
 JVM = java
 
-ARGS = 10 1000 B01902080 B01902080 B01902102 B01902058
+DEBUGFLAGS = -ea
+
+ARGS = 1000 1000 B01902080 B01902058 B01902135 B01902102
 
 
 #
@@ -63,6 +65,10 @@ default: clean classes
 # run
 run:
 	$(JVM) $(JVMFLAGS) $(MAIN) ${ARGS}
+
+# debug run
+debug:
+	$(JVM) $(JVMFLAGS) $(DEBUGFLAGS) $(MAIN) ${ARGS}
 
 #
 # This target entry uses Suffix Replacement within a macro: 

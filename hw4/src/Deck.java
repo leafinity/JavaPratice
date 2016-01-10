@@ -26,6 +26,7 @@ public class Deck {
 		ArrayList<Card> copy = new ArrayList<Card>(deck);
 
         Random random = new Random();
+        random.setSeed(System.currentTimeMillis());
         Set<Integer> randomSet = new LinkedHashSet<Integer>();
 
         while (randomSet.size() < _DECK_SIZE) {
