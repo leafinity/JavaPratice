@@ -76,6 +76,7 @@ System.out.println("Dealer get blackjack.");
 			_dealerPlay();	
 			_compareResult();
 
+			_checkBroken();
 			_cleapUpPlayersCache();
 			lastTable = _getCurrentTable();
 			System.out.println();
@@ -84,18 +85,14 @@ System.out.println("Dealer get blackjack.");
 
 	private void _askBet() {
 		for (PlayerAgent player: players) {
-			if (!player.beKickOff()) {
-				player.make_bet(_getLastTable(), nPlayer);
-			}
+			player.make_bet(_getLastTable(), nPlayer);
 		}
 	}
 
 	private void _assignFirstCardPair() {
 		for (PlayerAgent player: players) {
-			if (!player.beKickOff()) {
-				player.setFaceDownCard(deck.take());
-				player.assignCard(deck.take(), false);
-			}
+			player.setFaceDownCard(deck.take());
+			player.assignCard(deck.take(), false);
 		}
 		dealer.faceDownCard = deck.take();
 		dealer.faceUpCards.add(deck.take());
@@ -103,35 +100,25 @@ System.out.println("Dealer get blackjack.");
 
 	private void _askInsurance() {
 		for (PlayerAgent player: players) {
-			if (!player.beKickOff()) {
-				player.buy_insurance(dealer.getOpenCard(), _getCurrentTable(player));				
-			}
+			player.buy_insurance(dealer.getOpenCard(), _getCurrentTable(player));				
 		}
 	}
 
 	private void _askSurrender() {
 		for (PlayerAgent player: players) {
-			if (!player.beKickOff()) {
-				player.do_surrender(dealer.getOpenCard(), _getCurrentTable(player));
-			}
-			
+			player.do_surrender(dealer.getOpenCard(), _getCurrentTable(player));
 		}
 	}
 
 	private void _cleapUpPlayersCache() {
 		for (PlayerAgent player: players) {
-			if (!player.beKickOff()) {
-				player.cleanUp();
-			}
+			player.cleanUp();
 		}
 		dealer.cleanUp();
 	}
 
 	private void _playersPlay() {
 		for (PlayerAgent player: players) {
-			if (player.beKickOff()) {
-				continue;
-			}
 			System.out.println(player + "'s turn:");
 			//surrender
 			if (player.hasSurrender()) {
@@ -175,7 +162,7 @@ System.out.println("Bust!");
 						}
 					}//hit till stand
 				}//double down or hit till stand
-				
+
 				//if splited should have next round
 				if (splited) {
 					isSplitedRound = true;
@@ -204,9 +191,6 @@ System.out.println("Bust!");
 
 	private void _compareResult() {
 		for (PlayerAgent player: players) {
-			if (player.beKickOff()) {
-				continue;
-			}
 			if (player.hasSurrender()) {
 				player.decrease_chips(0.5 * player.getBet());
 				continue;
@@ -250,6 +234,20 @@ System.out.println(player.printChip());
 		}
 	}
 
+	private void _checkBroken() {
+		ArrayList<PlayerAgent> copy = new ArrayList<PlayerAgent>(players);
+		for (PlayerAgent player: copy) {
+			if (player.beKickOff())
+				players.remove(player);
+		}
+		copy = new ArrayList<PlayerAgent>(players);
+		for (PlayerAgent player: copy) {
+			if (player.checkBroken())
+				players.remove(player);
+		}
+
+	}
+
 	private ArrayList<Hand> _getCurrentTable(PlayerAgent self) {
 		ArrayList<Hand> currentTable = new ArrayList<Hand>();
 		for (PlayerAgent player: players) {
@@ -274,20 +272,12 @@ System.out.println(player.printChip());
 	}
 
 	private boolean noPlayer() {
-		int sum = 0;
-		for (PlayerAgent player: players) {
-			if (player.beKickOff()) {
-				sum++;
-			}
-		}
-		return sum == 4;
+		return players.size() == 0;
 	}
 
 	private void _printTable() {
 		for (PlayerAgent player: players) {
-			if (player.beKickOff())
-				continue;
-			assert player.getHand().getCards().size() == 1: "size: " + player.getHand().getCards().size();
+assert player.getHand().getCards().size() == 1: "size: " + player.getHand().getCards().size();
 			System.out.println(player + player.printHand(false));
 		}
 		System.out.println(dealer.printHand());

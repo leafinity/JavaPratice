@@ -2,7 +2,7 @@ import foop.*;
 import java.util.*;
 
 
-public class PlayerB01902102_2 extends Player {
+public class PlayerB01902102_4 extends Player {
 	
 	public enum Act {
 		HIT(true,false), DOUBLE(true,true), DSTAND(false,true), STAND(false,false);
@@ -17,24 +17,34 @@ public class PlayerB01902102_2 extends Player {
 	}
 
 	private Random chance;
-	private int unitBet;
 
-	private int getBet() {
-		int bet = get_chips() / 1000;
-	}
+	private int unitBet;
+	private int bet;
+	private double lastChips;
 
 	public PlayerB01902102(int nChip) {
 		super(nChip);
 		
 		chance = new Random(System.currentTimeMillis());
-		
+
+		lastChips = nChip;
 		unitBet = nChip/100;
 		if (unitBet < 1) 
 			unitBet = 1;
+		bet = unitBet;
 	}
 
 	public int make_bet(ArrayList<Hand> last_table, int total_player, int my_position) {
-		return getBet();
+		if (get_chips() < lastChips) {
+			bet += unitBet;
+		} else if (get_chips() > lastChips) {
+			bet -= unitBet;
+			if (bet < unitBet) {
+				bet = unitBet;
+			}
+		}
+		lastChips = get_chips();
+		return bet;
 	}
 
 	public boolean buy_insurance(Card my_open, Card dealer_open, ArrayList<Hand> current_table) {
@@ -78,8 +88,8 @@ public class PlayerB01902102_2 extends Player {
 
 	public boolean do_surrender(Card my_open, Card dealer_open, ArrayList<Hand> current_table) {
 		/*it is wired yo surrender with ony one card open*/
-		if (dealer_open.getValue() >=10 || dealer_open.getValue() == 1) {
-			if (my_open.getValue() <= 8 && my_open.getValue() >= 6) {
+		if (dealer_open.getValue() >= 10 || dealer_open.getValue() == 1) {
+			if (my_open.getValue() <= 7 && my_open.getValue() >= 5) {
 				if (chance.nextDouble() < 0.3) 
 					return true;
 			}

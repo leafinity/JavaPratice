@@ -2,7 +2,7 @@ import foop.*;
 import java.util.*;
 
 
-public class PlayerB01902102 extends Player {
+public class PlayerB01902102_3 extends Player {
 	
 	public enum Act {
 		HIT(true,false), DOUBLE(true,true), DSTAND(false,true), STAND(false,false);

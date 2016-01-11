@@ -102,6 +102,7 @@ public class PlayerAgent {
 
 
  	public void make_bet(ArrayList<Hand> last_table, int total_player) {
+ 		/*make bet*/
  		_bet = _player.make_bet(last_table, total_player, _position);
  		if (_bet == 0) {
 			System.out.println(_name + _position + ", you cannot bet 0.");
@@ -195,6 +196,26 @@ assert !splited || getSplitedHand().getCards().size() == 2: "splited: " + printH
 			System.out.println(_name + _position + " bet negative bet.");
 			System.out.println(_name + _position + " is kick of.");
 		}
+	}
+
+	public boolean checkBroken() {
+		// check > 1.0
+		try {
+			_player.decrease_chips(1.0);
+		} catch(Player.BrokeException e) {
+			System.out.println(_name + _position + " has broken.");
+			System.out.println(_name + _position + " is kick of.");
+			return true;
+		} catch(Player.NegativeException e) {
+			//should nerver happen
+		}
+		//add back 1.0
+		try {
+			_player.increase_chips(1.0);
+		} catch(Player.NegativeException e) {
+			//should nerver happen
+		}
+		return false;
 	}
 
 	public String toString() {
