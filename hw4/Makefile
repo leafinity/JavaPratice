@@ -10,7 +10,7 @@ JVM = java
 
 DEBUGFLAGS = -ea
 
-ARGS = 1000 1000 B01902080 B01902058 B01902135 B01902102
+ARGS = 100 10000 B01902041 B01902058 B01902135 B01902102
 
 
 #
@@ -45,14 +45,7 @@ ARGS = 1000 1000 B01902080 B01902058 B01902135 B01902102
 # CLASSES is a macro consisting of 4 words (one for each java source file)
 #
 
-CLASSES = \
-	src/Dealer.java \
-	src/Blackjack.java \
-	src/ComputeHand.java \
-	src/Deck.java \
-	src/PlayerAgent.java \
-	src/PlayerB01902102.java \
-	src/POOCasino.java
+CLASSES = $(wildcard src/*.java)
 
 MAIN = POOCasino
 
