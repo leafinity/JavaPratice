@@ -9,6 +9,7 @@ public class Deck {
 	public Deck() {
 		deck = new ArrayList<Card>();
 		assignedCards = new ArrayList<Card>();
+
 		byte[] suits = { 
     		Card.CLUB, 
 			Card.DIAMOND, 
@@ -23,6 +24,8 @@ public class Deck {
 
 	public void shuffle() {
 		deck.addAll(assignedCards);
+        assignedCards.clear();
+assert deck.size() == _DECK_SIZE:"deck: " + printDeck();
 		ArrayList<Card> copy = new ArrayList<Card>(deck);
 
         Random random = new Random();
@@ -49,5 +52,47 @@ public class Deck {
 
 	public int getNRemain() {
 		return deck.size();
+	}
+
+	private String printDeck() {
+		StringBuilder sb = new StringBuilder();
+		for(Card card: deck) {
+			switch(card.getSuit()) {
+				case Card.CLUB:
+					sb.append("C");
+					break;
+				case Card.DIAMOND:
+					sb.append("D");
+					break;
+				case Card.HEART:
+					sb.append("H");
+					break;
+				case Card.SPADE:
+					sb.append("S");
+					break;
+			}
+
+			switch(card.getValue()) {
+				case 10:
+					sb.append("T");
+					break;
+				case 11:
+					sb.append("J");
+					break;
+				case 12:
+					sb.append("Q");
+					break;
+				case 13:
+					sb.append("K");
+					break;
+				case 1:
+					sb.append("A");
+					break;
+				default:
+					sb.append(card.getValue());
+			}
+			sb.append(" ");
+		}
+		return sb.toString();
 	}
 }

@@ -3,6 +3,7 @@ import java.util.*;
 
 
 public class PlayerB01902102_3 extends Player {
+	/* always 1%*/
 	
 	public enum Act {
 		HIT(true,false), DOUBLE(true,true), DSTAND(false,true), STAND(false,false);
@@ -19,7 +20,7 @@ public class PlayerB01902102_3 extends Player {
 	private Random chance;
 	private int bet;
 
-	public PlayerB01902102(int nChip) {
+	public PlayerB01902102_3(int nChip) {
 		super(nChip);
 		
 		chance = new Random(System.currentTimeMillis());

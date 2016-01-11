@@ -94,7 +94,7 @@ public class PlayerB01902102 extends Player {
 		return false;
 	}
 
-	public boolean	hit_me(Hand my_open, Card dealer_open, ArrayList<Hand> current_table) {
+	public boolean hit_me(Hand my_open, Card dealer_open, ArrayList<Hand> current_table) {
 		int pos_y = getValue(dealer_open) - 1;
 		int myLValue = getLTotalValue(my_open);
 

@@ -3,6 +3,7 @@ import java.util.*;
 
 
 public class PlayerB01902102_2 extends Player {
+	/*Oscar betting system*/
 	
 	public enum Act {
 		HIT(true,false), DOUBLE(true,true), DSTAND(false,true), STAND(false,false);
@@ -17,24 +18,47 @@ public class PlayerB01902102_2 extends Player {
 	}
 
 	private Random chance;
+	
+	/*cache for betting*/
 	private int unitBet;
+	private int times;
+	private int total;
+	private boolean firstbet;
+	private double lastChips;
 
-	private int getBet() {
-		int bet = get_chips() / 1000;
-	}
-
-	public PlayerB01902102(int nChip) {
+	public PlayerB01902102_2(int nChip) {
 		super(nChip);
 		
 		chance = new Random(System.currentTimeMillis());
 		
+		lastChips = nChip;
 		unitBet = nChip/100;
 		if (unitBet < 1) 
 			unitBet = 1;
+		times = 1;
+		total = 0;
+		firstbet = true;
 	}
 
 	public int make_bet(ArrayList<Hand> last_table, int total_player, int my_position) {
-		return getBet();
+		if (firstbet) {
+			firstbet = false;
+			return unitBet;
+		}
+		if (lastChips > get_chips()) {//lose
+			total -= times;
+		} else if (lastChips < get_chips()) {//win
+			total += times;
+			if (total > 0) { // return to beginning
+				total = 0;
+				times = 1;
+			} else { // try to earn more
+				times += 1;
+			}
+		}
+
+		lastChips = get_chips();
+		return times * unitBet;
 	}
 
 	public boolean buy_insurance(Card my_open, Card dealer_open, ArrayList<Hand> current_table) {

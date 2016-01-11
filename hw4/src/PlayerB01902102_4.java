@@ -3,7 +3,7 @@ import java.util.*;
 
 
 public class PlayerB01902102_4 extends Player {
-	
+	/* +/-bet each losing/winning */	
 	public enum Act {
 		HIT(true,false), DOUBLE(true,true), DSTAND(false,true), STAND(false,false);
 
@@ -22,7 +22,7 @@ public class PlayerB01902102_4 extends Player {
 	private int bet;
 	private double lastChips;
 
-	public PlayerB01902102(int nChip) {
+	public PlayerB01902102_4(int nChip) {
 		super(nChip);
 		
 		chance = new Random(System.currentTimeMillis());

@@ -50,7 +50,7 @@ System.out.println("There is no player. Game Over.");
 			_assignFirstCardPair();
 
 			/*print current table*/
-System.out.println("table:");
+System.out.println((_nRound + 1) + " table:");
 			_printTable();
 System.out.println("----start----");
 

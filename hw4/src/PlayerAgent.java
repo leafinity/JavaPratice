@@ -115,8 +115,8 @@ public class PlayerAgent {
 	public void buy_insurance(Card dealer_open, ArrayList<Hand> current_table) {
 		_buyInsurance = _player.buy_insurance(_faceUpCards.get(0), dealer_open, current_table);
 		if (_buyInsurance) {
-			increase_chips(0.5 * _bet);
  			System.out.println(_name + _position + " buys insurance.");
+			decrease_chips(0.5 * _bet);
  		}
 	}
 
@@ -146,7 +146,7 @@ assert !splited || getSplitedHand().getCards().size() == 2: "splited: " + printH
 	}
 
 	public boolean do_split_if_can(Card dealer_open, ArrayList<Hand> current_table) {
-		if (_faceUpCards.get(0) != _faceUpCards.get(1))
+		if (_faceUpCards.get(0).getValue() != _faceUpCards.get(1).getValue())
 			return false;
 		if (_player.do_split(_faceUpCards, dealer_open, current_table)){
 			_splitedCards.add(_faceUpCards.get(1));
