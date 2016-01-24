@@ -1,2 +1,8 @@
-*.class
+hw1/src/*.class
+hw2/src/*.class
+hw3/src/*.class
+hw4/src/*.class
+hw1/*.class
+hw1/abby/poker/
+hw3/src/abby/poker/*.class
 *.docx
